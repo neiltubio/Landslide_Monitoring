@@ -88,7 +88,7 @@ body {
 .login-region{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(14,159,160,0.3);}
 
 .login-right {
-  width:460px;flex-shrink:0;background:var(--bg);
+  width:460px;flex-shrink:1;min-width:0;background:var(--bg);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:60px 48px;position:relative;
 }
@@ -152,7 +152,7 @@ body {
 .sidebar {
   position:fixed;top:0;left:0;width:224px;height:100vh;
   background:var(--t800);display:flex;flex-direction:column;
-  z-index:100;border-right:1px solid rgba(14,159,160,0.1);
+  z-index:1001;border-right:1px solid rgba(14,159,160,0.1);
 }
 
 .sidebar-logo{padding:20px 18px 16px;border-bottom:1px solid rgba(14,159,160,0.1);display:flex;align-items:center;gap:12px;}
@@ -184,6 +184,13 @@ body {
 
 .logout-btn i{font-size:17px;}
 .logout-btn:hover{background:rgba(192,57,43,0.15);color:#f08070;}
+/* ============================================================
+   HAMBURGER + BACKDROP — hidden by default on desktop
+============================================================ */
+.topbar-hamburger{display:none;}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(5,20,20,0.45);z-index:1000;pointer-events:none;}
+.sidebar-backdrop.open{pointer-events:all;}
+
 
 /* PLACEHOLDER — sidebar summary widget removed, now a dedicated page */
 .summary-run i {
@@ -802,11 +809,138 @@ body {
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--t100);border-radius:3px;}
 
+
+/* ── Leaflet stacking — always below sidebar ── */
+.leaflet-top,
+.leaflet-bottom,
+.leaflet-control-container { z-index:400 !important; }
+.leaflet-pane { z-index:200 !important; }
+.leaflet-tile-pane { z-index:200 !important; }
+.leaflet-overlay-pane { z-index:300 !important; }
+.leaflet-shadow-pane { z-index:300 !important; }
+.leaflet-marker-pane { z-index:350 !important; }
+.leaflet-tooltip-pane { z-index:380 !important; }
+.leaflet-popup-pane { z-index:390 !important; }
 /* ============================================================
    RESPONSIVE
 ============================================================ */
-@media(max-width:960px){.two-col{grid-template-columns:1fr;}}
-@media(max-width:680px){
-  .sidebar{display:none;} .main{margin-left:0;}
-  .login-left{display:none;} .login-right{width:100%;}
+
+/* Tablet landscape — collapse two-col, tighten spacing */
+@media(max-width:960px){
+  .two-col{grid-template-columns:1fr;}
+  .topbar{height:auto;flex-wrap:wrap;padding:10px 16px;gap:8px;}
+  .topbar-left h1{font-size:15px;}
+  .page-content{padding:14px 16px 32px;}
+  .alert-banner{margin:12px 16px 0;}
+}
+
+/* Tablet portrait — slide sidebar off-screen, show hamburger */
+@media(max-width:768px){
+  .sidebar{
+    transform:translateX(-100%);
+    transition:transform 0.25s ease;
+    z-index:1001;
+  }
+  .sidebar.open{transform:translateX(0);}
+  .main{margin-left:0;}
+
+  /* Show hamburger */
+  .topbar-hamburger{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:34px;height:34px;
+    border-radius:var(--r-sm);
+    border:1px solid var(--border);
+    background:var(--surface);
+    color:var(--muted);
+    cursor:pointer;
+    font-size:20px;
+    flex-shrink:0;
+    order:-1;
+  }
+
+  /* Show backdrop when open */
+  .sidebar-backdrop.open{display:block;pointer-events:all;}
+
+  /* Tables scroll horizontally */
+  .data-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+  /* Alert strip stacks vertically */
+  .alert-summary-strip{flex-direction:column;gap:14px;padding:16px;}
+  .alert-sum-divider{width:100%;height:1px;}
+}
+
+/* Mobile — hide clock, tighten padding */
+@media(max-width:500px){
+  .topbar-time{display:none;}
+  .topbar{padding:10px 12px;}
+  .page-content{padding:12px 12px 28px;}
+  .alert-banner{margin:10px 12px 0;font-size:12.5px;}
+  .stat-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));}
+}
+
+/* Login: mobile — show compact branded form, hide left panel */
+@media(max-width:768px){
+  .login-page{flex-direction:column;}
+
+  /* Hide the full left branding panel */
+  .login-left{display:none;}
+
+  /* Right panel becomes full screen */
+  .login-right{
+    width:100%;
+    min-height:100vh;
+    padding:48px 28px 36px;
+    justify-content:center;
+    background:linear-gradient(160deg,#051414 0%,#0d2a2b 40%,#f0f5f5 40%);
+  }
+
+  /* Card gets a solid white surface */
+  .login-card{
+    background:#f0f5f5;
+    border-radius:16px;
+    padding:32px 28px;
+    box-shadow:0 8px 40px rgba(0,0,0,0.25);
+    max-width:380px;
+    width:100%;
+  }
+
+  /* Show a compact logo/brand header above the form on mobile */
+  .login-card::before{
+    content:'SlopeGuard';
+    display:block;
+    font-size:22px;
+    font-weight:600;
+    color:#051414;
+    letter-spacing:-0.3px;
+    margin-bottom:2px;
+  }
+
+  .login-card::after{
+    content:'Early Warning System';
+    display:block;
+    font-size:11px;
+    font-weight:500;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:#0e9fa0;
+    margin-bottom:20px;
+  }
+
+  /* Tighten card label since we have the pseudo header */
+  .login-card-label{margin-top:4px;}
+
+  /* Footer note repositioned */
+  .login-footer-note{
+    position:static;
+    margin-top:20px;
+    text-align:center;
+    color:#4a8a8b;
+  }
+}
+
+@media(max-width:420px){
+  .login-right{padding:32px 16px 28px;}
+  .login-card{padding:28px 20px;}
 }

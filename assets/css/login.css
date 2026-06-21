@@ -143,9 +143,75 @@ body {
 .login-footer-note { position: absolute; bottom: 22px; font-size: 11px; color: #8ab8b8; }
 
 /* ===== RESPONSIVE ===== */
+
+/* Tablet: tighten the right panel */
+@media (max-width: 960px) {
+  .login-right { width: 380px; padding: 60px 36px; }
+}
+
+/* Mobile: hide left panel entirely, center the form */
 @media (max-width: 768px) {
-  .login-page   { flex-direction: column; }
-  .login-left   { min-height: 260px; padding: 40px 32px; flex: none; }
-  .login-right  { width: 100%; padding: 40px 28px; }
-  .login-features { display: none; }
+  .login-page { flex-direction: column; }
+
+  /* Hide decorative left panel */
+  .login-left { display: none; }
+
+  /* Full-screen right panel with branded background */
+  .login-right {
+    width: 100%;
+    min-height: 100vh;
+    padding: 0;
+    background: #051414;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Card floats centered with its own white surface */
+  .login-card {
+    background: #f0f5f5;
+    border-radius: 18px;
+    padding: 36px 32px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+    max-width: 360px;
+    width: calc(100% - 40px);
+    margin: 0 auto;
+  }
+
+  /* Mini branding above the form */
+  .login-card::before {
+    content: 'SlopeGuard';
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    color: #051414;
+    letter-spacing: -0.3px;
+    margin-bottom: 2px;
+  }
+
+  .login-card::after {
+    content: 'Early Warning System';
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #0e9fa0;
+    margin-bottom: 22px;
+  }
+
+  /* Footer note: pull out of absolute, sit below card */
+  .login-footer-note {
+    position: static;
+    margin-top: 18px;
+    text-align: center;
+    color: rgba(14, 159, 160, 0.5);
+  }
+}
+
+/* Small phones */
+@media (max-width: 420px) {
+  .login-card {
+    padding: 28px 22px;
+    width: calc(100% - 28px);
+  }
 }
